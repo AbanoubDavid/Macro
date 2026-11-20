@@ -22,7 +22,7 @@ ActionManager_Initialize() {
 ; ------------------------------------------------------------
 
 ActionManager_Execute(action, context := unset) {
-    global MS_State, MS_Constants
+    global MS_State
 
     if !IsObject(action)
         return false
