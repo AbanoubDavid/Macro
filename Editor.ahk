@@ -630,7 +630,7 @@ Editor_ValidateAction(action) {
 
         case "keyPress", "keyDown", "keyUp":
             return actionData.Has("key")
-                && IsString(actionData["key"])
+                && Type(actionData["key"]) = "String"
                 && Trim(actionData["key"]) != ""
 
         case "mouseClick":
