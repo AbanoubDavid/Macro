@@ -176,7 +176,8 @@ ExecutionConsole_ValidateLevel(level) {
     return (level = "INFO"
         || level = "WARNING"
         || level = "ERROR"
-        || level = "DEBUG")
+        || level = "DEBUG"
+        || level = "SUCCESS")
 }
 
 ; ------------------------------------------------------------
