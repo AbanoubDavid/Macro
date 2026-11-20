@@ -59,26 +59,26 @@ MS_CreateDirectories()
 ; SPECIALIZED MODULES
 ; ------------------------------------------------------------
 
-#Include Modules\KeyboardUI.ahk
-#Include Modules\MouseUI.ahk
-#Include Modules\TriggerManager.ahk
-#Include Modules\PlaybackEngine.ahk
-#Include Modules\ActionManager.ahk
+#Include KeyboardUI.ahk
+#Include MouseUI.ahk
+#Include TriggerManager.ahk
+#Include PlaybackEngine.ahk
+#Include ActionManager.ahk
 
 ; ------------------------------------------------------------
 ; ADVANCED FEATURES
 ; ------------------------------------------------------------
 
-#Include Modules\UndoRedo.ahk
-#Include Modules\ProfileManager.ahk
-#Include Modules\DragDropManager.ahk
-#Include Modules\MacroChaining.ahk
-#Include Modules\ConditionalBranching.ahk
-#Include Modules\Sandbox.ahk
-#Include Modules\MultiPixelDetection.ahk
-#Include Modules\ExecutionConsole.ahk
-#Include Modules\TemplateManager.ahk
-#Include Modules\VersionHistory.ahk
+#Include UndoRedo.ahk
+#Include ProfileManager.ahk
+#Include DragDropManager.ahk
+#Include MacroChaining.ahk
+#Include ConditionalBranching.ahk
+#Include Sandbox.ahk
+#Include MultiPixelDetection.ahk
+#Include ExecutionConsole.ahk
+#Include TemplateManager.ahk
+#Include VersionHistory.ahk
 
 ; ------------------------------------------------------------
 ; USER INTERFACE
@@ -116,8 +116,7 @@ MS_CreateDirectories() {
         base "\Data\Backups",
         base "\Assets",
         base "\Assets\Icons",
-        base "\Assets\Fonts",
-        base "\Modules"
+        base "\Assets\Fonts"
     ]
 
     for directory in directories {
@@ -138,9 +137,11 @@ MS_Initialize() {
 
     ; STEP 2: Initialize persistent storage
     Storage_Initialize()
+    Storage_LoadMacros()
 
     ; STEP 3: Load application settings
     Settings_Initialize()
+    Settings_Load()
 
     ; STEP 4: Initialize execution diagnostics
     ExecutionConsole_Initialize()

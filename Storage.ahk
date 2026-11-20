@@ -450,61 +450,43 @@ Storage_LoadProfiles() {
 ; TEMPLATE SERIALIZATION
 ; ============================================================
 
-Storage_SaveTemplates() {
-    global MS_Templates
-    global MS_Paths
-
+Storage_SaveTemplates(data := unset) {
+    global MS_Templates, MS_Paths
+    st_source := IsSet(data) && IsObject(data) ? data : MS_Templates
+    st_items := st_source.Has("items") && IsObject(st_source["items"])
+        ? st_source["items"]
+        : Map()
     st_templates := []
-
-    for st_id, st_template in MS_Templates
+    for st_id, st_template in st_items
         st_templates.Push(Storage_ObjectToMap(st_template))
-
     st_data := Map(
         "templates", st_templates,
+        "nextId", st_source.Get("nextId", 1),
         "savedAt", A_Now
     )
-
     Storage_CreateBackup(MS_Paths["templates"])
-
-    return Storage_WriteFile(
-        MS_Paths["templates"],
-        Storage_EncodeJSON(st_data)
-    )
+    return Storage_WriteFile(MS_Paths["templates"], Storage_EncodeJSON(st_data))
 }
 
 Storage_LoadTemplates() {
-    global MS_Templates
     global MS_Paths
-
     st_json := Storage_ReadFile(MS_Paths["templates"], "")
-
     if st_json = ""
-        return false
-
+        return Map("items", Map(), "nextId", 1)
     try {
         st_data := Storage_DecodeJSON(st_json)
-
         if !(st_data is Map) || !st_data.Has("templates")
-            return false
-
+            throw Error("Invalid template data.")
         st_loaded := Map()
-
         for st_template in st_data["templates"] {
             if !(st_template is Map) || !st_template.Has("id")
                 continue
-
             st_loaded[st_template["id"]] := Storage_ObjectToMap(st_template)
         }
-
-        MS_Templates := st_loaded
-        return true
-
+        return Map("items", st_loaded, "nextId", st_data.Get("nextId", st_loaded.Count + 1))
     } catch as st_error {
-        ExecutionConsole_Log(
-            "ERROR",
-            "Failed to load templates: " . st_error.Message
-        )
-        return false
+        ExecutionConsole_Log("ERROR", "Failed to load templates: " . st_error.Message)
+        return Map("items", Map(), "nextId", 1)
     }
 }
 
@@ -574,61 +556,55 @@ Storage_LoadChains() {
 ; VERSION HISTORY SERIALIZATION
 ; ============================================================
 
-Storage_SaveVersions() {
-    global MS_Versions
-    global MS_Paths
-
+Storage_SaveVersions(data := unset) {
+    global MS_Versions, MS_Paths
+    st_source := IsSet(data) && IsObject(data) ? data : MS_Versions
+    st_macroVersions := st_source.Get("macros", Map())
     st_versions := []
-
-    for st_id, st_version in MS_Versions
-        st_versions.Push(Storage_ObjectToMap(st_version))
-
+    for st_macroId, st_list in st_macroVersions {
+        for st_version in st_list
+            st_versions.Push(Storage_ObjectToMap(st_version))
+    }
     st_data := Map(
         "versions", st_versions,
+        "maxVersions", st_source.Get("maxVersions", 50),
+        "autoSnapshot", st_source.Get("autoSnapshot", true),
+        "nextId", st_source.Get("nextId", 1),
         "savedAt", A_Now
     )
-
     Storage_CreateBackup(MS_Paths["versions"])
-
-    return Storage_WriteFile(
-        MS_Paths["versions"],
-        Storage_EncodeJSON(st_data)
-    )
+    return Storage_WriteFile(MS_Paths["versions"], Storage_EncodeJSON(st_data))
 }
 
 Storage_LoadVersions() {
-    global MS_Versions
     global MS_Paths
-
     st_json := Storage_ReadFile(MS_Paths["versions"], "")
-
     if st_json = ""
-        return false
-
+        return Map("macros", Map(), "maxVersions", 50, "autoSnapshot", true, "nextId", 1)
     try {
         st_data := Storage_DecodeJSON(st_json)
-
         if !(st_data is Map) || !st_data.Has("versions")
-            return false
-
+            throw Error("Invalid version history data.")
         st_loaded := Map()
-
         for st_version in st_data["versions"] {
             if !(st_version is Map) || !st_version.Has("id")
                 continue
-
-            st_loaded[st_version["id"]] := Storage_ObjectToMap(st_version)
+            st_macroId := st_version.Get("macroId", "")
+            if st_macroId = ""
+                continue
+            if !st_loaded.Has(st_macroId)
+                st_loaded[st_macroId] := []
+            st_loaded[st_macroId].Push(Storage_ObjectToMap(st_version))
         }
-
-        MS_Versions := st_loaded
-        return true
-
-    } catch as st_error {
-        ExecutionConsole_Log(
-            "ERROR",
-            "Failed to load versions: " . st_error.Message
+        return Map(
+            "macros", st_loaded,
+            "maxVersions", st_data.Get("maxVersions", 50),
+            "autoSnapshot", st_data.Get("autoSnapshot", true),
+            "nextId", st_data.Get("nextId", 1)
         )
-        return false
+    } catch as st_error {
+        ExecutionConsole_Log("ERROR", "Failed to load versions: " . st_error.Message)
+        return Map("macros", Map(), "maxVersions", 50, "autoSnapshot", true, "nextId", 1)
     }
 }
 

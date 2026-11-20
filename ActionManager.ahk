@@ -22,7 +22,7 @@ ActionManager_Initialize() {
 ; ------------------------------------------------------------
 
 ActionManager_Execute(action, context := unset) {
-    global MS_State, MS_Constants
+    global MS_State
 
     if !IsObject(action)
         return false
@@ -49,7 +49,7 @@ ActionManager_Execute(action, context := unset) {
             case "key_combo", "combination", "hotkey":
                 result := ActionManager_ExecuteCombination(data)
 
-            case "mouse", "mouse_click", "click":
+            case "mouse", "mouse_click", "mouseclick", "click":
                 result := ActionManager_ExecuteMouse(data)
 
             case "mouse_down", "mousedown":
@@ -67,10 +67,10 @@ ActionManager_Execute(action, context := unset) {
             case "delay", "wait":
                 result := ActionManager_ExecuteDelay(data)
 
-            case "pixel_condition", "pixel":
+            case "pixel_condition", "pixelcondition", "pixel":
                 result := ActionManager_ExecutePixelCondition(data)
 
-            case "wait_until":
+            case "wait_until", "waituntil":
                 result := ActionManager_ExecuteWaitUntil(data)
 
             case "condition", "if":
@@ -533,14 +533,14 @@ ActionManager_Validate(action) {
         "key_down", "keydown", "press_key",
         "key_up", "keyup", "release_key",
         "key_combo", "combination", "hotkey",
-        "mouse", "mouse_click", "click",
+        "mouse", "mouse_click", "mouseclick", "click",
         "mouse_down", "mousedown",
         "mouse_up", "mouseup",
         "mouse_move", "mousemove",
         "move_to", "coordinate",
         "delay", "wait",
-        "pixel_condition", "pixel",
-        "wait_until", "condition", "if",
+        "pixel_condition", "pixelcondition", "pixel",
+        "wait_until", "waituntil", "condition", "if",
         "branch", "repeat", "loop",
         "chain", "macro_chain",
         "comment", "label", "noop"

@@ -823,3 +823,17 @@ Lib_LogWarning(message) {
 ; ============================================================
 ; END OF Lib.ahk
 ; ============================================================
+
+
+; ============================================================
+; IDENTIFIERS AND TIMESTAMPS
+; ============================================================
+
+Lib_GenerateId(prefix := "item") {
+    prefix := RegExReplace(String(prefix), "[^A-Za-z0-9_-]", "_")
+    return prefix . "_" . A_TickCount . "_" . Random(100000, 999999)
+}
+
+Lib_GetTimestamp() {
+    return Lib_Timestamp()
+}

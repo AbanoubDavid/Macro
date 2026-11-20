@@ -37,6 +37,21 @@ ExecutionConsole_Initialize() {
 ExecutionConsole_Log(message, level := "INFO", source := "MacroStudio") {
     global MS_ExecutionConsole
 
+    ; Accept both (message, level) and legacy (level, message) calls.
+    knownLevels := ["DEBUG", "INFO", "SUCCESS", "WARNING", "ERROR"]
+    firstIsLevel := false
+    for knownLevel in knownLevels {
+        if StrUpper(String(message)) = knownLevel {
+            firstIsLevel := true
+            break
+        }
+    }
+    if firstIsLevel && !ExecutionConsole_ValidateLevel(StrUpper(String(level))) {
+        temporaryMessage := level
+        level := message
+        message := temporaryMessage
+    }
+
     if !IsObject(MS_ExecutionConsole)
         return false
 
@@ -161,7 +176,8 @@ ExecutionConsole_ValidateLevel(level) {
     return (level = "INFO"
         || level = "WARNING"
         || level = "ERROR"
-        || level = "DEBUG")
+        || level = "DEBUG"
+        || level = "SUCCESS")
 }
 
 ; ------------------------------------------------------------

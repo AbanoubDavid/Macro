@@ -630,7 +630,7 @@ Editor_ValidateAction(action) {
 
         case "keyPress", "keyDown", "keyUp":
             return actionData.Has("key")
-                && IsString(actionData["key"])
+                && Type(actionData["key"]) = "String"
                 && Trim(actionData["key"]) != ""
 
         case "mouseClick":
@@ -819,3 +819,19 @@ Editor_Shutdown() {
 ; ============================================================
 ; END OF Editor.ahk
 ; ============================================================
+
+
+; Compatibility API for modules using the earlier editor contract.
+Editor_SetModified(value := true) {
+    global MS_Editor
+    MS_Editor["modified"] := !!value
+    MS_Editor["currentActionCount"] := MS_Editor["actions"].Length
+    return true
+}
+
+Editor_AutoSave() {
+    global MS_Editor
+    if !IsObject(MS_Editor) || !MS_Editor.Get("modified", false)
+        return true
+    return Editor_Save()
+}
