@@ -837,3 +837,13 @@ PixelPicker_Shutdown() {
 ; ============================================================
 ; END OF PixelPicker.ahk
 ; ============================================================
+
+
+; Compatibility wrappers used by ActionManager.
+PixelPicker_GetPixelColor(x, y) {
+    return PixelPicker_GetColorAt(x, y)
+}
+
+PixelPicker_CompareColors(colorA, colorB, tolerance := 10) {
+    return PixelPicker_ColorsMatch(colorA, colorB, tolerance)
+}
