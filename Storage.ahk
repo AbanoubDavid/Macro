@@ -450,17 +450,18 @@ Storage_LoadProfiles() {
 ; TEMPLATE SERIALIZATION
 ; ============================================================
 
-Storage_SaveTemplates() {
+Storage_SaveTemplates(data := unset) {
     global MS_Templates, MS_Paths
-    st_templates := []
-    st_items := MS_Templates.Has("items") && IsObject(MS_Templates["items"])
-        ? MS_Templates["items"]
+    st_source := IsSet(data) && IsObject(data) ? data : MS_Templates
+    st_items := st_source.Has("items") && IsObject(st_source["items"])
+        ? st_source["items"]
         : Map()
+    st_templates := []
     for st_id, st_template in st_items
         st_templates.Push(Storage_ObjectToMap(st_template))
     st_data := Map(
         "templates", st_templates,
-        "nextId", MS_Templates.Get("nextId", 1),
+        "nextId", st_source.Get("nextId", 1),
         "savedAt", A_Now
     )
     Storage_CreateBackup(MS_Paths["templates"])
@@ -555,18 +556,20 @@ Storage_LoadChains() {
 ; VERSION HISTORY SERIALIZATION
 ; ============================================================
 
-Storage_SaveVersions() {
+Storage_SaveVersions(data := unset) {
     global MS_Versions, MS_Paths
+    st_source := IsSet(data) && IsObject(data) ? data : MS_Versions
+    st_macroVersions := st_source.Get("macros", Map())
     st_versions := []
-    for st_macroId, st_macroVersions in MS_Versions["macros"] {
-        for st_version in st_macroVersions
+    for st_macroId, st_list in st_macroVersions {
+        for st_version in st_list
             st_versions.Push(Storage_ObjectToMap(st_version))
     }
     st_data := Map(
         "versions", st_versions,
-        "maxVersions", MS_Versions["maxVersions"],
-        "autoSnapshot", MS_Versions["autoSnapshot"],
-        "nextId", MS_Versions["nextId"],
+        "maxVersions", st_source.Get("maxVersions", 50),
+        "autoSnapshot", st_source.Get("autoSnapshot", true),
+        "nextId", st_source.Get("nextId", 1),
         "savedAt", A_Now
     )
     Storage_CreateBackup(MS_Paths["versions"])
