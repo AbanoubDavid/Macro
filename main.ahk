@@ -137,9 +137,11 @@ MS_Initialize() {
 
     ; STEP 2: Initialize persistent storage
     Storage_Initialize()
+    Storage_LoadMacros()
 
     ; STEP 3: Load application settings
     Settings_Initialize()
+    Settings_Load()
 
     ; STEP 4: Initialize execution diagnostics
     ExecutionConsole_Initialize()
