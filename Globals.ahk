@@ -45,7 +45,7 @@ global MS_Settings := Map()
 ; 4. MACRO DATABASE
 ; ============================================================
 
-global MS_Macros := []
+global MS_Macros := Map()
 
 global MS_ActiveMacro := Map()
 
@@ -57,7 +57,7 @@ global MS_SelectedMacroId := ""
 ; 5. PROFILE MANAGEMENT
 ; ============================================================
 
-global MS_Profiles := []
+global MS_Profiles := Map()
 
 global MS_CurrentProfileId := ""
 
@@ -67,7 +67,7 @@ global MS_DefaultProfileId := ""
 ; 6. MACRO CHAINING
 ; ============================================================
 
-global MS_Chains := []
+global MS_Chains := Map()
 
 global MS_ActiveChainId := ""
 
@@ -137,7 +137,7 @@ global MS_UndoRedo := Map()
 ; 14. ACTION TEMPLATES
 ; ============================================================
 
-global MS_Templates := []
+global MS_Templates := Map()
 
 global MS_SelectedTemplateId := ""
 
@@ -145,7 +145,7 @@ global MS_SelectedTemplateId := ""
 ; 15. VERSION HISTORY
 ; ============================================================
 
-global MS_Versions := []
+global MS_Versions := Map()
 
 global MS_SelectedVersionId := ""
 
